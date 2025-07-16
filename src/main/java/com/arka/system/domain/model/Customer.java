@@ -1,4 +1,4 @@
-package com.arka.system.model;
+package com.arka.system.domain.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -14,18 +14,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Entidad que representa un proveedor en el sistema Arka.
- * Los proveedores suministran productos para el inventario.
+ * Entidad que representa un cliente del sistema Arka.
+ * Los clientes son almacenes que compran productos en grandes cantidades.
  */
 @Entity
-@Table(name = "suppliers", indexes = {
-    @Index(name = "idx_supplier_email", columnList = "email", unique = true),
-    @Index(name = "idx_supplier_document", columnList = "document_number", unique = true)
+@Table(name = "customers", indexes = {
+    @Index(name = "idx_customer_email", columnList = "email", unique = true),
+    @Index(name = "idx_customer_document", columnList = "document_number", unique = true)
 })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Supplier {
+public class Customer {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,6 +76,6 @@ public class Supplier {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PurchaseOrder> purchaseOrders;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Order> orders;
 }

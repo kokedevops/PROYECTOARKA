@@ -216,20 +216,25 @@ info.app.version=1.0.0
 
 ## Estructura de Paquetes
 
-### 1. Crear Directorios de Paquetes
+### 1. Crear Directorios de Paquetes (Arquitectura Hexagonal)
 
 ```bash
-# Crear estructura de directorios
-mkdir -p src/main/java/com/arka/system/controller
-mkdir -p src/main/java/com/arka/system/service
-mkdir -p src/main/java/com/arka/system/repository
-mkdir -p src/main/java/com/arka/system/model
-mkdir -p src/main/java/com/arka/system/dto
-mkdir -p src/main/java/com/arka/system/exception
-mkdir -p src/main/java/com/arka/system/config
+# Crear estructura de directorios para arquitectura hexagonal
+New-Item -ItemType Directory -Path "src\main\java\com\arka\system\domain\model" -Force
+New-Item -ItemType Directory -Path "src\main\java\com\arka\system\domain\port\in" -Force
+New-Item -ItemType Directory -Path "src\main\java\com\arka\system\domain\port\out" -Force
+New-Item -ItemType Directory -Path "src\main\java\com\arka\system\domain\service" -Force
+New-Item -ItemType Directory -Path "src\main\java\com\arka\system\application\usecase" -Force
+New-Item -ItemType Directory -Path "src\main\java\com\arka\system\infrastructure\adapter\in\rest" -Force
+New-Item -ItemType Directory -Path "src\main\java\com\arka\system\infrastructure\adapter\out\persistence" -Force
+New-Item -ItemType Directory -Path "src\main\java\com\arka\system\infrastructure\adapter\out\external" -Force
+New-Item -ItemType Directory -Path "src\main\java\com\arka\system\infrastructure\config" -Force
+New-Item -ItemType Directory -Path "src\main\java\com\arka\system\shared\dto" -Force
+New-Item -ItemType Directory -Path "src\main\java\com\arka\system\shared\exception" -Force
+New-Item -ItemType Directory -Path "src\main\java\com\arka\system\shared\util" -Force
 ```
 
-### 2. Estructura Final del Proyecto
+### 2. Estructura Final del Proyecto (Hexagonal)
 ```
 src/
 ├── main/
@@ -238,13 +243,26 @@ src/
 │   │       └── arka/
 │   │           └── system/
 │   │               ├── ArkaSystemApplication.java
-│   │               ├── controller/
-│   │               ├── service/
-│   │               ├── repository/
-│   │               ├── model/
-│   │               ├── dto/
-│   │               ├── exception/
-│   │               └── config/
+│   │               ├── domain/              # Núcleo del dominio
+│   │               │   ├── model/          # Entidades
+│   │               │   ├── port/           # Interfaces
+│   │               │   │   ├── in/         # Casos de uso
+│   │               │   │   └── out/        # Repositorios
+│   │               │   └── service/        # Servicios de dominio
+│   │               ├── application/         # Casos de uso
+│   │               │   └── usecase/        # Implementaciones
+│   │               ├── infrastructure/      # Adaptadores
+│   │               │   ├── adapter/
+│   │               │   │   ├── in/
+│   │               │   │   │   └── rest/   # Controllers REST
+│   │               │   │   └── out/
+│   │               │   │       ├── persistence/ # Repositorios JPA
+│   │               │   │       └── external/    # APIs externas
+│   │               │   └── config/         # Configuraciones
+│   │               └── shared/             # Elementos compartidos
+│   │                   ├── dto/           # DTOs
+│   │                   ├── exception/     # Excepciones
+│   │                   └── util/          # Utilidades
 │   └── resources/
 │       ├── application.properties
 │       └── static/
@@ -257,7 +275,7 @@ src/
 
 ### 1. Crear Entidad Category
 
-Crear `src/main/java/com/arka/system/model/Category.java`:
+Crear `src/main/java/com/arka/system/domain/model/Category.java`:
 
 ```java
 package com.arka.system.model;

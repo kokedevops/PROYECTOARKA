@@ -1,4 +1,4 @@
-package com.arka.system.model;
+package com.arka.system.domain.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -11,23 +11,23 @@ import lombok.AllArgsConstructor;
 import java.math.BigDecimal;
 
 /**
- * Entidad que representa un item/línea de una orden de compra.
+ * Entidad que representa un item de una orden de compra a proveedor.
  */
 @Entity
-@Table(name = "order_items")
+@Table(name = "purchase_order_items")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderItem {
+public class PurchaseOrderItem {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotNull(message = "La orden es obligatoria")
+    @NotNull(message = "La orden de compra es obligatoria")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+    @JoinColumn(name = "purchase_order_id", nullable = false)
+    private PurchaseOrder purchaseOrder;
     
     @NotNull(message = "El producto es obligatorio")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,6 +48,9 @@ public class OrderItem {
     @PositiveOrZero(message = "El subtotal debe ser positivo")
     @Column(name = "subtotal", nullable = false, precision = 12, scale = 2)
     private BigDecimal subtotal;
+    
+    @Column(name = "received_quantity")
+    private Integer receivedQuantity = 0;
     
     /**
      * Calcula el subtotal automáticamente basado en cantidad y precio unitario

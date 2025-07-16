@@ -1,4 +1,4 @@
-package com.arka.system.model;
+package com.arka.system.domain.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -21,6 +22,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Category {
     
     @Id
@@ -36,6 +38,7 @@ public class Category {
     @Column(name = "description", length = 500)
     private String description;
     
+    @Builder.Default
     @Column(name = "active", nullable = false)
     private Boolean active = true;
     

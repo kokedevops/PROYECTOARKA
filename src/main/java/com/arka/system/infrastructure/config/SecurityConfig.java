@@ -1,4 +1,4 @@
-package com.arka.system.config;
+package com.arka.system.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

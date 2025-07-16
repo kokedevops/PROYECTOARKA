@@ -1,4 +1,4 @@
-package com.arka.system.model;
+package com.arka.system.domain.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -28,6 +29,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Product {
     
     @Id
@@ -63,11 +65,13 @@ public class Product {
     @Column(name = "sale_price", nullable = false, precision = 12, scale = 2)
     private BigDecimal salePrice;
     
+    @Builder.Default
     @NotNull(message = "El stock actual es obligatorio")
     @PositiveOrZero(message = "El stock no puede ser negativo")
     @Column(name = "stock_quantity", nullable = false)
     private Integer stockQuantity = 0;
     
+    @Builder.Default
     @NotNull(message = "El stock mínimo es obligatorio")
     @PositiveOrZero(message = "El stock mínimo debe ser positivo")
     @Column(name = "minimum_stock", nullable = false)
@@ -80,6 +84,7 @@ public class Product {
     @Column(name = "dimensions", length = 100)
     private String dimensions;
     
+    @Builder.Default
     @Column(name = "active", nullable = false)
     private Boolean active = true;
     
@@ -101,4 +106,20 @@ public class Product {
     
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductAttribute> attributes;
+    
+    /**
+     * Verificar si el producto está activo
+     * @return true si el producto está activo
+     */
+    public boolean isActive() {
+        return Boolean.TRUE.equals(active);
+    }
+    
+    /**
+     * Establecer el estado activo del producto
+     * @param active true para activar, false para desactivar
+     */
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

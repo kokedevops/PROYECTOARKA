@@ -1,4 +1,4 @@
-package com.arka.system.model;
+package com.arka.system.domain.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
