@@ -62,26 +62,69 @@ Arka es un sistema de gestión de inventario y ventas desarrollado para una empr
 
 ## Arquitectura
 
-El proyecto sigue una **arquitectura en capas** (Layered Architecture):
+El proyecto sigue una **arquitectura hexagonal** (Ports and Adapters):
 
 ```
-├── Controller Layer (REST API)
-├── Service Layer (Business Logic)
-├── Repository Layer (Data Access)
-└── Model Layer (Entities)
+┌─────────────────────────────────────────────────────────┐
+│                    Adapters (UI)                        │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │
+│  │ REST API    │  │ GraphQL     │  │ CLI         │     │
+│  │ Controller  │  │ Resolver    │  │ Interface   │     │
+│  └─────────────┘  └─────────────┘  └─────────────┘     │
+└─────────────────────────────────────────────────────────┘
+                              │
+                    ┌─────────▼─────────┐
+                    │      Ports        │
+                    │   (Interfaces)    │
+                    └─────────▲─────────┘
+                              │
+┌─────────────────────────────▼─────────────────────────────┐
+│                  Domain Core                              │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │
+│  │   Domain    │  │  Use Cases  │  │   Domain    │       │
+│  │  Entities   │  │ (Services)  │  │  Services   │       │
+│  └─────────────┘  └─────────────┘  └─────────────┘       │
+└─────────────────────────────────────────────────────────┘
+                              │
+                    ┌─────────▼─────────┐
+                    │      Ports        │
+                    │   (Interfaces)    │
+                    └─────────▲─────────┘
+                              │
+┌─────────────────────────────▼─────────────────────────────┐
+│                Adapters (Infrastructure)                  │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │
+│  │ Database    │  │ File System │  │ External    │       │
+│  │ Repository  │  │ Storage     │  │ APIs        │       │
+│  └─────────────┘  └─────────────┘  └─────────────┘       │
+└─────────────────────────────────────────────────────────┘
 ```
 
-### Estructura de Paquetes
+### Estructura de Paquetes (Hexagonal)
 
 ```
 com.arka.system/
-├── controller/     # Controladores REST
-├── service/        # Lógica de negocio
-├── repository/     # Acceso a datos
-├── model/          # Entidades JPA
-├── dto/            # Data Transfer Objects
-├── exception/      # Manejo de excepciones
-└── config/         # Configuraciones
+├── domain/                    # Núcleo del dominio
+│   ├── model/                # Entidades de dominio
+│   ├── port/                 # Puertos (interfaces)
+│   │   ├── in/              # Puertos de entrada (use cases)
+│   │   └── out/             # Puertos de salida (repositories)
+│   └── service/             # Servicios de dominio
+├── application/              # Casos de uso
+│   └── usecase/             # Implementación de casos de uso
+├── infrastructure/           # Adaptadores
+│   ├── adapter/
+│   │   ├── in/              # Adaptadores de entrada
+│   │   │   ├── rest/        # Controllers REST
+│   │   │   └── graphql/     # Resolvers GraphQL
+│   │   └── out/             # Adaptadores de salida
+│   │       ├── persistence/ # Repositorios JPA
+│   │       └── external/    # APIs externas
+│   └── config/              # Configuraciones
+└── shared/                   # Elementos compartidos
+    ├── dto/                 # Data Transfer Objects
+    ├── exception/           # Excepciones
+    └── util/                # Utilidades
 ```
 
 ## Metodología de Desarrollo
@@ -243,31 +286,5 @@ El sistema incluye Spring Boot Actuator para monitoreo:
    - Cache distribuido (Redis)
    - Load balancing
 
-## Contribución
 
-### Estándares de Código
 
-- Seguir convenciones de Java (Google Style Guide)
-- Cobertura de tests mínima: 80%
-- Documentación JavaDoc en métodos públicos
-- Validaciones con Bean Validation
-- Manejo de errores con @ControllerAdvice
-
-### Proceso de Desarrollo
-
-1. Crear feature branch desde `main`
-2. Implementar funcionalidad con tests
-3. Ejecutar tests y verificar cobertura
-4. Crear Pull Request con descripción detallada
-5. Code review por al menos 2 desarrolladores
-6. Merge después de aprobación
-
-## Contacto y Soporte
-
-- **Equipo de Desarrollo**: desarrollo@arka.com.co
-- **Product Owner**: po@arka.com.co
-- **Scrum Master**: scrum@arka.com.co
-
-## Licencia
-
-© 2025 Arka Colombia. Todos los derechos reservados.
